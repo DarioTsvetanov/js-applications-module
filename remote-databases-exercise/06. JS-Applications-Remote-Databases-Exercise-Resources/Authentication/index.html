@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://www.gstatic.com/firebasejs/8.0.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.0.1/firebase-analytics.js"></script>
+    <title>Authentication</title>
+</head>
+<body> 
+    <div id="login-form" style="display: none;">
+        <h3>Log in</h3>
+        <div id="email-wrapper">
+            <label for="email">Email:</label>
+            <input type="text" placeholder="Enter your email...">
+        </div>
+        <div id="password-wrapper">
+            <label for="password">Password:</label>
+            <input type="password" placeholder="Enter your password...">
+        </div>
+        <button id="sign-in-button">Sign in</button>
+        <p id="sign-in-error"></p>
+    </div>
+    <div id="registration-form">
+        <h2>Create new account</h2>
+        <div id="register-email-wrapper">
+            <label for="register-email">Email:</label>
+            <input type="text" placeholder="Enter your email...">
+        </div>
+        <div id="register-password-wrapper">
+            <label for="register-password">Password:</label>
+            <input type="password" placeholder="Enter your password...">
+        </div>
+        <button id="create-button">Create account</button>
+        <a href="" id="already-have-account-text">Already have an account?</a>
+        <p id="error" style="display: none;"></p>
+    </div>
+    <div id='logged-wrapper' style="display: none;">
+        <h2></h2>
+        <img src="./hello-there.jpg" style="width: 20%;">
+        <button id="sign-out-button" style="display: block;">Sign out</button>
+
+    </div>
+    <script src="config.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.0.1/firebase-auth.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
+
+

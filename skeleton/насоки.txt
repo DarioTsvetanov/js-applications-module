@@ -1,0 +1,48 @@
+﻿npm init --yes
+npm install --save-dev lite-server
+package.json -> start: lite-server ./index.html
+npm install --save handlebars
+<script src="./node_modules/handlebars/dist/handlebars.min.js"></script>
+npm start
+
+!location.pathname ���� /url
+!change the main container id
+1. Navigation
+-redirecting
+-e.preventDefault()
+let url = new URL(e.target.href);
+history.pushState({}, '', url.pathname);
+router((url.pathname).slice(1));
+
+const navigate = (path) => {
+    history.pushState({}, '', path);
+    router(path);
+}
+
+2. templates
+separating templates in a script tag with type="text/x-handlebars-template"
+let template = document.querySelector('id/class/tag').innerHTML();
+adding an attribute to template with onsubmit="onLoginSubmit(event)
+
+3. Creating a router function
+const router = (path) => {}
+const routes = {
+    'login': 'login-form-template',
+}
+
+4.
+localStorage.setItem('auth', JSON.stringify(data)); - saving locally data
+
+when registering a user we should see if the two passwords are the same
+adding a different object/key:value pair to an existing object:
+- Object.keys(res).map(key => Object.assign(res[key], key))
+- Object.keys(res).map(key => ({key, ...res[key]}))
+
+transform an object to an array let arrayName = Object.keys(objName).map(x => res[x]);
+
+when we use links -> href="/#{path}" onclick="functionName(event)"
+when we use form with button for submitting -> onsubmit="functionName(event)";
+
+тестване на страницата след премахване на всички елементи от базата
+
+!!!return Object.keys(res).map(x => Object.assign(res[x], {id: x}));

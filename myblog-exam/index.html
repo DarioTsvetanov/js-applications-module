@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="styles/style.css">
+	<title>MyBlog</title>
+</head>
+
+<body>
+	<div id="root"></div>
+
+	<script type="text/x-handlebars-template" id="navigation-template">
+		<header id="header">
+            <h1>MyBlog</h1>
+                {{#if isAuthenticated}}
+                <h2>Welcome <span>{{email}}</span>!</h2>
+                    <nav id="nav"> 
+                        <ul>
+                            <li><a onclick="logout(event)">Logout</a></li>
+                        </ul>
+                    </nav>
+                {{else}}
+                    <nav id="nav"> 
+                        <ul>
+                            <li><a href="/home" onclick="navigateHandler(event)">Home</a></li>
+                            <li><a href="/login" onclick="navigateHandler(event)">Login</a></li>
+                            <li><a href="/register" onclick="navigateHandler(event)">Register</a></li>
+                        </ul>
+                    </nav>
+                {{/if}}
+		</header>
+	</script>
+	  
+    <script type="text/x-handlebars-template" id="home-template">
+        {{>navigation-template}}
+        {{#if isAuthenticated}}
+            {{>create-post-template}}
+        {{else}}
+            <section id="home">
+                <section class="background-container">
+                    <h1>Welcome to MyBlog!</h1>
+                    <div class="auth-buttons">
+                        <a href="/login" onclick="navigateHandler(event)">Login</a>
+                        <a href="/register" onclick="navigateHandler(event)">Register</a>
+                    </div>
+                </section>
+            </section>
+        {{/if}}
+    </script>
+    
+    <script type="text/x-handlebars-template" id="login-form-template">
+        {{>navigation-template}}
+        <section id="login">
+            <div class="color">
+                <div class="login-form">
+                    <h1>Login</h1>
+                    <form id="form">
+                        <label for="email">Email</label>
+                        <input type="text" name="email">
+                        <label for="password">Password</label>
+                        <input type="password" name="password">
+                        <button onclick="onLoginFormSubmit(event)">Submit</button>
+                        <a href="/register" class="option" onclick="navigateHandler(event)">Don't have an account?</a>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </script>
+
+    <script type="text/x-handlebars-template" id="register-form-template">
+        {{>navigation-template}}
+        <section id="register">
+            <div class="color">
+                <div class="register-form">
+                    <h1>Register</h1>
+                    <form id="form">
+                        <label for="email">Email</label>
+                        <input type="text" name="email">
+                        <label for="password">Password</label>
+                        <input type="password" name="password">
+                        <label for="repeat-password">Repeat Password</label>
+                        <input type="password" name="repeatPassword">
+                        <button onclick="onRegisterFormSubmit(event)">Submit</button>
+                        <a href="/login" class="option" onclick="navigateHandler(event)">Already have an account?</a>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </script>
+
+    <script type="text/x-handlebars-template" id="create-post-template">
+        <section id="home-logged">
+            <section class="first-section">
+                <section class="background-container">
+                    <form id="create-post-form">
+                        <h1>Create Post</h1>
+                        <label for="title">Title</label>
+                        <input type="text" name="title">
+                        <label for="category">Category</label>
+                        <input type="text" name="category">
+                        <label for="content">Content</label>
+                        <textarea name="content" cols="30" rows="7"></textarea>
+                        <button onclick="createPost(event)">Submit</button>
+                    </form>
+                </section>
+            </section>
+            <section class="second-section">
+            <h3>Articles</h3>
+            <hr>
+            <div class="posts-row">
+                {{#if posts}}
+                    {{#each posts}}
+                        {{>post-template}}
+                    {{/each}}
+                {{/if}}
+            </div>
+            </section>
+        </section>
+    </script>
+
+    <script type="text/x-handlebars-template" id="single-post-template">
+        <article class="post">
+            <h1>{{title}}</h1>
+            <h2><span>{{category}}</span></h2>
+            <p>{{content}}</p>
+            <a id="delete-button" onclick="deletePost(event, '{{id}}')">Delete</a>
+            <a href="/details/{{id}}" id="details-button" onclick="navigateHandler(event)">Details</a>
+            <a href="/{{id}}/edit" id="edit-button" onclick="navigateHandler(event, '{{id}}')">Edit</a>
+        </article>
+    </script>
+
+    <script type="text/x-handlebars-template" id="details-template">
+        {{>navigation-template}}
+        <section class="details">
+            <div class="detail">
+              <h1>Title: {{title}}</h1>
+              <h2>Category: {{category}}</h2>
+              <h3>Content: {{content}}</h3>
+              <a href="/home" onclick="navigateHandler(event)">Back to Home</a>
+            </div>
+          </section>
+    </script>
+
+    <script type="text/x-handlebars-template" id="edit-post-template">
+        <main id="home-logged">
+            <section class="first-section">
+                <section class="background-container">
+                    <form class="edit-form">
+                    <h1>Edit Post</h1>
+                    <label for="title">Title</label>
+                    <input type="text" name="title" value="{{title}}">
+                    <label for="category">Category</label>
+                    <input type="text" name="category" value="{{category}}">
+                    <label for="content">Content</label>
+                    <textarea name="content" cols="30" rows="7">{{content}}</textarea>
+                    <button onclick="onEditButtonSubmit(event, '{{id}}')">Edit</button>
+                    <a href="" id="close-btn"><img src="../../images/close.png"></a>
+                    </form>
+                </section>
+            </section>
+        </main>
+    </script>
+
+	<script src="https://www.gstatic.com/firebasejs/8.1.1/firebase-app.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/8.1.1/firebase-analytics.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/8.0.2/firebase-auth.js"></script>
+
+	<script src="./node_modules/handlebars/dist/handlebars.min.js"></script>
+	<script src="/config.js"></script>
+	<script src="/router.js"></script>
+	<script src="/services.js"></script>
+	<script src="/init.js"></script>
+</body>
+
+</html>

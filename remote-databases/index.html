@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./style.css" type="text/css">
+    <script src="https://www.gstatic.com/firebasejs/8.0.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.0.1/firebase-analytics.js"></script>
+    <title>Document</title>
+</head>
+<body>
+    <div id="wrapper">
+        <label for="email">Email:</label>
+        <input type="text" placeholder="Enter your email" id="email-input">
+        <label for="password">Password:</label>
+        <input type="password" placeholder="Enter your password" id="password-input">
+        <button id="submit">submit</button>
+    </div>
+        
+    <script src="configuration.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.0.1/firebase-auth.js"></script>
+
+    <script>
+        const auth = firebase.auth();
+
+        const submitButton = document.querySelector('#submit');
+        submitButton.addEventListener('click', () => {
+
+            const emailInput = document.querySelector('#email-input');
+            const passwordInput = document.querySelector('#password-input');
+
+            const wrapper = document.querySelector('#wrapper');
+
+            auth.signInWithEmailAndPassword(emailInput.value, passwordInput.value)
+            .then(() => window.location.href = "http://stackoverflow.com")
+            .catch(e => wrapper.innerHTML += `<p>${e.message}</p>`)
+        })
+    </script>
+</body>
+</html>

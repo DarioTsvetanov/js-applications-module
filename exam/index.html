@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Destinations</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+
+<body>
+    <div id="container">
+        
+    </div>
+    <div>
+        <div class="notification loadingBox">
+            Loading …
+        </div>
+        <div class="notification infoBox" id="success-notification">
+            Info
+        </div>
+        <div class="notification errorBox" id="error-notification">
+            Error: destination name can't be empty!
+        </div>
+    </div>
+
+    <script type="text/x-handlebars-template" id="footer-template">
+        <footer>@SoftUni Destinations 2020</footer>
+    </script>
+
+    <script type="text/x-handlebars-template" id="navigation-template">
+        <nav>
+            {{#if isAuthenticated}}
+                <div class="left-container"> 
+                    <ul>
+                        <li><a href="/home" onclick="navigateHandler(event)">Home</a></li>
+                        <li><a href="/my-destinations" onclick="navigateHandler(event)">Destinations</a></li>
+                        <li><a href="/add-destination" onclick="navigateHandler(event)">Add +</a></li>
+                    </ul>
+                </div>
+                <div class="right-container">
+                    <span>Welcome, {{email}} |</span>
+                    <a onclick="logoutUser(event)" class="log-out" onclick="logoutUser(event)">Logout</a>
+                </div>
+            {{else}}
+                <div class="left-container"> 
+                    <ul>
+                        <li><a href="/home" onclick="navigateHandler(event)">Home</a></li>
+                        <li><a href="/login" onclick="navigateHandler(event)">Login</a></li>
+                        <li><a href="/register" onclick="navigateHandler(event)">Register</a></li>
+                    </ul>
+                </div>
+            {{/if}}
+        </nav>
+    </script>
+
+    <script type="text/x-handlebars-template" id="home-template">
+        {{>navigation-template}}
+        <section id="viewCatalog" class="background-img">
+            {{#if isAuthenticated}}
+                {{#if destinations}}
+                    <div class="added-destinations">
+                        {{#each destinations}}
+                            {{>single-destination-template}}
+                        {{/each}}
+                    </div>
+                {{else}}
+                    <p>No destinations...</p>
+                {{/if}}
+            {{else}}
+                <div class="guest">
+                    No destinations possible! Please sign in...
+                </div>
+            {{/if}}
+        </section>
+        {{>footer-template}}
+    </script>
+
+    <script type="text/x-handlebars-template" id="single-destination-template">
+        <a href="/details/{{id}}" onclick="navigateHandler(event)" class="added-destination">
+            <img src="{{imgUrl}}"
+                alt="" class="picture-added-destination">
+            <h3>{{name}}</h3>
+            <span>to {{city}} </span><span>{{date}}</span>
+        </a>
+    </script>
+
+    <script type="text/x-handlebars-template" id="register-form-template">
+        {{>navigation-template}}
+        <section id="viewRegister">
+            <h2>Create your account:</h2>
+            <form id="formRegister">
+                <label for="email">Email:</label>
+                <input type="text" id="email" name="email" placeholder="Email">
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" placeholder="Password">
+                <label for="rePassword">Repeat Password:</label>
+                <input type="password" id="rePassword" name="rePassword" placeholder="Repeat Password">
+                <input type="submit" class="register" value="Register" onclick="onRegisterSubmit(event)">
+            </form>
+        </section>
+        {{>footer-template}}
+    </script>
+
+    <script type="text/x-handlebars-template" id="login-form-template">
+        {{>navigation-template}}
+        <section id="viewLogin">
+            <h2>Login to your account:</h2>
+            <form id="formLogin">
+                <label for="email">Email:</label>
+                <input type="text" id="email" name="email" placeholder="Enter your Email">
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" placeholder="Enter your Password">
+                <input type="submit" class="login" value="Login" onclick="onLoginSubmit(event)">
+            </form>
+        </section>
+        {{>footer-template}}
+    </script>
+
+    <script type="text/x-handlebars-template" id="add-destination-template">
+        {{>navigation-template}}
+        <section id="viewAdddestination">
+            <h2>Add new destination</h2>
+            <form id="formAdddestination">
+                <label for="destination">Destination name:</label>
+                <input type="text" id="destination" name="destination" placeholder="Destination name">
+                <label for="city">City:</label>
+                <input type="text" id="city" name="city" placeholder="City">
+                <label for="duration">Duration:</label>
+                <input type="number" id="duration" name="duration" placeholder="Duration">
+                <label for="departureDate">Departure Date:</label>
+                <input type="date" id="departureDate" name="departureDate">
+                <label for="imgUrl">Image:</label>
+                <input type="text" id="imgUrl" name="imgUrl" placeholder="https://">
+
+                <input type="submit" class="create" value="Add" onclick="onCreateSubmit(event)">
+            </form>
+        </section>
+        {{>footer-template}}
+    </script>
+
+    <script type="text/x-handlebars-template" id="details-template">
+        {{>navigation-template}}
+        <section id="viewdestinationDetails">
+            <div class="destination-area">
+                <div class="destination-area-left">
+                    <img src="{{imgUrl}}"
+                        alt="{{city}}">
+                </div>
+                <div class="destination-area-right">
+                    <h3>{{name}}</h3>
+                    <div>to {{city}}</div>
+                    <div class="data-and-time">
+                        {{date}}
+                        {{#if isCreator}}
+                            <a href="/edit/{{id}}" onclick="navigateHandler(event, '{{id}}')" class="edit-destination-detail"></a>
+                        {{/if}}
+                    </div>
+                    <div>
+                        {{duration}} days
+                    </div>
+                </div>
+            </div>
+        </section>
+        {{>footer-template}}
+    </script>
+
+    <script type="text/x-handlebars-template" id="edit-template">
+        {{>navigation-template}}
+        <section id="viewEditdestination">
+            <h2>Edit existing destination</h2>
+            <form id="formAdddestination" class="edit-destination-form">
+                <label for="destination">Destination name:</label>
+                <input type="text" id="destination" name="destination" value="{{name}}">
+                <label for="city">City:</label>
+                <input type="text" id="city" name="city" value="{{city}}">
+                <label for="duration">Duration:</label>
+                <input type="number" id="duration" name="duration" value="{{duration}}">
+                <label for="departureDate">Departure Date:</label>
+                <input type="date" id="departureDate" name="departureDate" value="{{date}}">
+                <label for="imgUrl">Image:</label>
+                <input type="text" id="imgUrl" name="imgUrl"
+                    value="{{imgUrl}}">
+
+                <input type="submit" class="create" value="Edit" onclick="onEditSubmit(event, '{{id}}')">
+            </form>
+        </section>
+        {{>footer-template}}
+    </script>
+
+    <script type="text/x-handlebars-template" id="my-destinations-template">
+        {{>navigation-template}}
+        <section id="viewMydestinations">
+            <h3>Your destinations</h3>
+                {{#each myDestinations}}
+                    {{>my-destination-template}}
+                {{/each}}
+        </section>
+        {{>footer-template}}
+    </script>
+
+    <script type="text/x-handlebars-template" id="my-destination-template">
+        <div class="destination-ticket">
+            <div class="destination-left">
+                <img src="{{imgUrl}}" alt="">
+            </div>
+            <div class="destination-right">
+                <div>
+                    <h3>{{name}}</h3><span>{{date}}</span>
+                </div>
+                <div>
+                    to {{city}}
+                </div>
+                <p>{{duration}} days </p>
+                <a onclick="deleteDestination(event, '{{id}}')" class="remove">REMOVE</a>
+                <a href="/details/{{id}}" onclick="navigateHandler(event)" class="details">Details</a>
+            </div>
+        </div>
+    </script>
+
+    <script src="/node_modules/handlebars/dist/handlebars.min.js"></script>
+
+    <script src="/router.js"></script>
+    <script src="/services.js"></script>
+    <script src="/init.js"></script>
+
+</body>
+
+</html>
